@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "SafeGuard",
+    "slug": "safeguard-app",
+    "scheme": "safeguard",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.safeguard.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "SafeGuard uses your location to connect you with responders and alerts near you.",
+        "NSPhotoLibraryUsageDescription": "SafeGuard needs photo access so you can attach images to an emergency report."
+      }
+    },
+    "android": {
+      "package": "com.safeguard.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#14213D"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "SafeGuard uses your location to connect you with responders and alerts near you."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SafeGuard needs photo access so you can attach images to an emergency report."
+        }
+      ]
+    ]
+  }
+}

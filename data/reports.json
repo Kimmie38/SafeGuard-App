@@ -1,0 +1,93 @@
+[
+  {
+    "id": "ER-2024-001",
+    "category": "Robbery",
+    "title": "Armed robbery reported near Terminus Market",
+    "description": "Multiple suspects fled the scene on foot heading towards the back road behind the market. Security has been alerted and is combing the area. Residents are advised to avoid the back entrance until further notice.",
+    "status": "Active",
+    "reporter": "Anonymous",
+    "location": "Terminus Market, Jos North",
+    "region": "Terminus",
+    "timeAgo": "15 mins ago",
+    "severity": "Critical",
+    "images": []
+  },
+  {
+    "id": "ER-2024-002",
+    "category": "Fire Outbreak",
+    "title": "Small fire in residential compound",
+    "description": "Fire outbreak in a Bukuru compound kitchen area, fire service has been notified and is on the way. Smoke visible from the main road.",
+    "status": "Responding",
+    "reporter": "Jane Smith",
+    "location": "Off Bukuru Expressway",
+    "region": "Bukuru",
+    "timeAgo": "1 hour ago",
+    "severity": "High",
+    "images": []
+  },
+  {
+    "id": "ER-2024-003",
+    "category": "Medical Emergency",
+    "title": "Elderly resident requires urgent medical assistance",
+    "description": "Resident collapsed near the Rayfield community hall, ambulance requested. First responders on site providing basic care while awaiting transport.",
+    "status": "Resolved",
+    "reporter": "Mike Johnson",
+    "location": "Rayfield Community Hall",
+    "region": "Rayfield",
+    "timeAgo": "3 hours ago",
+    "severity": "High",
+    "images": []
+  },
+  {
+    "id": "ER-2024-004",
+    "category": "Accident",
+    "title": "Two-vehicle collision at Farin Gada roundabout",
+    "description": "Minor injuries reported, road partially blocked in both directions. Traffic wardens have been notified.",
+    "status": "Responding",
+    "reporter": "David Okafor",
+    "location": "Farin Gada Roundabout",
+    "region": "Farin Gada",
+    "timeAgo": "5 hours ago",
+    "severity": "Medium",
+    "images": []
+  },
+  {
+    "id": "ER-2024-005",
+    "category": "Suspicious Activity",
+    "title": "Unknown persons loitering near Angwan Rogo fence line",
+    "description": "Two unfamiliar individuals spotted taking photos of a perimeter fence along the estate boundary. Reported to community watch.",
+    "status": "Resolved",
+    "reporter": "Grace Adeyemi",
+    "location": "Angwan Rogo Estate boundary",
+    "region": "Angwan Rogo",
+    "timeAgo": "1 day ago",
+    "severity": "Low",
+    "images": []
+  },
+  {
+    "id": "ER-2024-006",
+    "category": "Domestic Threat",
+    "title": "Loud domestic disturbance reported",
+    "description": "Neighbors reported shouting and signs of a physical altercation. Community leaders alerted for a welfare check.",
+    "status": "Active",
+    "reporter": "Anonymous",
+    "location": "Tudun Wada residential area",
+    "region": "Tudun Wada",
+    "timeAgo": "20 mins ago",
+    "severity": "High",
+    "images": []
+  },
+  {
+    "id": "ER-2024-007",
+    "category": "Fire Outbreak",
+    "title": "Bush fire spreading near Bauchi Road junction",
+    "description": "Dry season bush fire spotted spreading towards residential structures along Bauchi Road. Fire service en route.",
+    "status": "Active",
+    "reporter": "Samuel Danladi",
+    "location": "Bauchi Road junction",
+    "region": "Bauchi Road",
+    "timeAgo": "35 mins ago",
+    "severity": "Critical",
+    "images": []
+  }
+]

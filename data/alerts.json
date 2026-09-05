@@ -1,0 +1,56 @@
+[
+  {
+    "id": "AL-001",
+    "type": "Emergency",
+    "title": "Active emergency nearby",
+    "message": "Armed robbery reported near Terminus Market, close to your area",
+    "timeAgo": "15 mins ago",
+    "unread": true,
+    "region": "Terminus"
+  },
+  {
+    "id": "AL-002",
+    "type": "Update",
+    "title": "Report status updated",
+    "message": "Your report #ER-2024-001 has been assigned to Officer Johnson",
+    "timeAgo": "1 hour ago",
+    "unread": true,
+    "region": "Terminus"
+  },
+  {
+    "id": "AL-003",
+    "type": "Announcement",
+    "title": "Community safety meeting",
+    "message": "Join us for a community safety discussion on Saturday at 4 PM",
+    "timeAgo": "2 hours ago",
+    "unread": false,
+    "region": "Jos North"
+  },
+  {
+    "id": "AL-004",
+    "type": "Update",
+    "title": "Fire incident resolved",
+    "message": "The fire outbreak along Bauchi Road has been successfully contained",
+    "timeAgo": "3 hours ago",
+    "unread": false,
+    "region": "Bauchi Road"
+  },
+  {
+    "id": "AL-005",
+    "type": "Update",
+    "title": "Report resolved",
+    "message": "Your report #ER-2024-005 has been marked as resolved",
+    "timeAgo": "5 hours ago",
+    "unread": false,
+    "region": "Naraguta"
+  },
+  {
+    "id": "AL-006",
+    "type": "Announcement",
+    "title": "New security measures",
+    "message": "Enhanced security protocols now active at all entry points across Jos",
+    "timeAgo": "1 day ago",
+    "unread": false,
+    "region": "Jos North"
+  }
+]
