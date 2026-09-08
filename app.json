@@ -1,9 +1,10 @@
 {
   "expo": {
     "name": "SafeGuard",
-    "slug": "safeguard-app",
+    "slug": "safeguard",
     "scheme": "safeguard",
     "version": "1.0.0",
+    "icon": "./assets/shield-icon.svg",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -18,11 +19,13 @@
     "android": {
       "package": "com.safeguard.app",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/shield-icon.svg",
         "backgroundColor": "#14213D"
       },
       "permissions": [
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "plugins": [
@@ -39,6 +42,13 @@
           "photosPermission": "SafeGuard needs photo access so you can attach images to an emergency report."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c8bf0d24-d189-4bce-a10a-21ec79a02499"
+      }
+    },
+    "owner": "safeguard-app"
   }
 }
