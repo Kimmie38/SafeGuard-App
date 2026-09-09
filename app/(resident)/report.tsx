@@ -9,12 +9,13 @@ import {
   Platform,
   Alert,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useApp } from "@/context/AppContext";
+import { useApp, ApiError } from "@/context/AppContext";
 import { CATEGORIES } from "@/constants/theme";
 
 const REPORT_CATEGORIES = CATEGORIES.filter((c) => c !== "All");
@@ -28,6 +29,7 @@ export default function Report() {
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [images, setImages] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // No hard cap on photo count or description length — full story is
   // always available on the detail screen even if cards truncate it.
@@ -55,21 +57,31 @@ export default function Report() {
     setImages((prev) => prev.filter((u) => u !== uri));
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!title.trim() || !description.trim() || !location.trim()) {
       Alert.alert("Missing details", "Please fill in every field before submitting.");
       return;
     }
-    addReport({ category, title, description, location, severity, images });
-    setTitle("");
-    setDescription("");
-    setLocation("");
-    setImages([]);
-    Alert.alert(
-      "Report submitted",
-      `Responders and neighbors in ${userRegion ?? "your area"} have been notified.`,
-      [{ text: "View feed", onPress: () => router.push("/(resident)/feed") }]
-    );
+    setIsSubmitting(true);
+    try {
+      await addReport({ category, title, description, location, severity, images });
+      setTitle("");
+      setDescription("");
+      setLocation("");
+      setImages([]);
+      Alert.alert(
+        "Report submitted",
+        `Responders and neighbors in ${userRegion ?? "your area"} have been notified.`,
+        [{ text: "View feed", onPress: () => router.push("/(resident)/feed") }]
+      );
+    } catch (err) {
+      Alert.alert(
+        "Couldn't submit report",
+        err instanceof ApiError ? err.message : "Please check your connection and try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -216,12 +228,21 @@ export default function Report() {
 
           <Pressable
             onPress={submit}
-            className="bg-coral rounded-2xl py-4 items-center flex-row justify-center gap-2"
+            disabled={isSubmitting}
+            className={`bg-coral rounded-2xl py-4 items-center flex-row justify-center gap-2 ${
+              isSubmitting ? "opacity-70" : ""
+            }`}
           >
-            <Ionicons name="alert-circle" size={18} color="white" />
-            <Text className="font-body-semibold text-white text-[15px]">
-              Submit report
-            </Text>
+            {isSubmitting ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <>
+                <Ionicons name="alert-circle" size={18} color="white" />
+                <Text className="font-body-semibold text-white text-[15px]">
+                  Submit report
+                </Text>
+              </>
+            )}
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, Alert } from "react-native";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useApp, Report } from "@/context/AppContext";
+import { useApp, Report, ApiError } from "@/context/AppContext";
 import StatusBadge from "@/components/StatusBadge";
 import FilterPills from "@/components/FilterPills";
 import { STATUS_LIST } from "@/constants/theme";
@@ -17,6 +17,15 @@ export default function ManageReports() {
   const filtered = reports
     .filter((r) => (scope === "mine" ? r.region === userRegion : true))
     .filter((r) => (filter === "All" ? true : r.status === filter));
+
+  const handleStatusChange = (id: string, status: Report["status"]) => {
+    updateReportStatus(id, status).catch((err) => {
+      Alert.alert(
+        "Couldn't update status",
+        err instanceof ApiError ? err.message : "Please check your connection and try again."
+      );
+    });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-canvas" edges={["top"]}>
@@ -72,7 +81,9 @@ export default function ManageReports() {
             Nothing here.
           </Text>
         ) : (
-          filtered.map((r) => (
+          filtered.map((r) => {
+            const canManage = r.region === userRegion;
+            return (
             <View
               key={r.id}
               className="bg-card border border-hairline rounded-2xl p-4 mb-3"
@@ -93,27 +104,34 @@ export default function ManageReports() {
                 </Text>
               </Pressable>
 
-              <View className="flex-row gap-2">
-                {STATUS_LIST.map((s) => (
-                  <Pressable
-                    key={s}
-                    onPress={() => updateReportStatus(r.id, s)}
-                    className={`flex-1 py-2.5 rounded-xl border items-center ${
-                      r.status === s ? "bg-navy border-navy" : "bg-canvas border-hairline"
-                    }`}
-                  >
-                    <Text
-                      className={`font-body-semibold text-[11px] ${
-                        r.status === s ? "text-white" : "text-ink"
+              {canManage ? (
+                <View className="flex-row gap-2">
+                  {STATUS_LIST.map((s) => (
+                    <Pressable
+                      key={s}
+                      onPress={() => handleStatusChange(r.id, s)}
+                      className={`flex-1 py-2.5 rounded-xl border items-center ${
+                        r.status === s ? "bg-navy border-navy" : "bg-canvas border-hairline"
                       }`}
                     >
-                      {s}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
+                      <Text
+                        className={`font-body-semibold text-[11px] ${
+                          r.status === s ? "text-white" : "text-ink"
+                        }`}
+                      >
+                        {s}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              ) : (
+                <Text className="font-body text-xs text-mist italic">
+                  Managed by {r.region}'s area chairman
+                </Text>
+              )}
             </View>
-          ))
+            );
+          })
         )}
       </ScrollView>
     </SafeAreaView>

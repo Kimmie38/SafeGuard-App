@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { View, Text, Pressable, Image, ScrollView, Share } from "react-native";
+import { View, Text, Pressable, Image, ScrollView, Share, Alert } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useApp, Report } from "@/context/AppContext";
+import { useApp, Report, ApiError } from "@/context/AppContext";
 import StatusBadge from "@/components/StatusBadge";
 import ImageViewerModal from "@/components/ImageViewerModal";
 import { STATUS_LIST } from "@/constants/theme";
 
 export default function IncidentDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { reports, role, updateReportStatus } = useApp();
+  const { reports, role, userRegion, updateReportStatus } = useApp();
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
   const report = reports.find((r) => r.id === id);
@@ -29,6 +29,15 @@ export default function IncidentDetail() {
   }
 
   const images = report.images ?? [];
+
+  const handleStatusChange = (status: Report["status"]) => {
+    updateReportStatus(report.id, status).catch((err) => {
+      Alert.alert(
+        "Couldn't update status",
+        err instanceof ApiError ? err.message : "Please check your connection and try again."
+      );
+    });
+  };
 
   const handleShare = async () => {
     try {
@@ -115,7 +124,7 @@ export default function IncidentDetail() {
           <Row icon="alert-circle-outline" label="Severity" value={report.severity} last />
         </View>
 
-        {role === "admin" && (
+        {role === "admin" && report.region === userRegion && (
           <View className="mb-6">
             <Text className="font-body-medium text-ink text-[13px] mb-2">
               Update status
@@ -124,7 +133,7 @@ export default function IncidentDetail() {
               {STATUS_LIST.map((s) => (
                 <Pressable
                   key={s}
-                  onPress={() => updateReportStatus(report.id, s)}
+                  onPress={() => handleStatusChange(s)}
                   className={`flex-1 py-3 rounded-xl border items-center ${
                     report.status === s ? "bg-navy border-navy" : "bg-card border-hairline"
                   }`}
@@ -139,6 +148,13 @@ export default function IncidentDetail() {
                 </Pressable>
               ))}
             </View>
+          </View>
+        )}
+        {role === "admin" && report.region !== userRegion && (
+          <View className="mb-6 bg-card border border-hairline rounded-2xl p-4">
+            <Text className="font-body text-mist text-[13px]">
+              This report is outside your coverage area — it's managed by {report.region}'s area chairman.
+            </Text>
           </View>
         )}
 

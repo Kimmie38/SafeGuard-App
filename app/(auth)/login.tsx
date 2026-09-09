@@ -4,27 +4,28 @@ import {
   Text,
   TextInput,
   Pressable,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
+  ActivityIndicator,
+  Alert,
+  Image,
 } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useApp, Role } from "@/context/AppContext";
-import { REGIONS } from "@/constants/theme";
-import SelectField from "@/components/SelectField";
+import { useApp, ApiError, Role } from "@/context/AppContext";
 import { requestLocationPermission } from "@/utils/location";
 
 export default function Login() {
   const { login, setLocationEnabled } = useApp();
-  const [role, setRole] = useState<Role>("resident");
+  const [portal, setPortal] = useState<Role>("resident");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [region, setRegion] = useState<string>(REGIONS[0]);
   const [locationStatus, setLocationStatus] = useState<
     "idle" | "granted" | "denied"
   >("idle");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const enableLocation = async () => {
     const result = await requestLocationPermission();
@@ -32,24 +33,50 @@ export default function Login() {
     setLocationEnabled(result.granted);
   };
 
-  const handleLogin = () => {
-    login(role, role === "admin" ? "Officer Johnson" : "John Doe", region);
-    router.replace(role === "admin" ? "/(admin)" : "/(resident)");
+  const handleLogin = async () => {
+    if (!email.trim() || !password) {
+      setError("Enter your email and password.");
+      return;
+    }
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      const actualRole = await login(email.trim(), password);
+      if (actualRole !== portal) {
+        // Be honest rather than silently overriding their choice: their
+        // account's real role wins (a login tab can't grant permissions),
+        // but say so instead of just teleporting them somewhere unexpected.
+        Alert.alert(
+          "Signed in",
+          `This account is registered as ${actualRole === "admin" ? "an area chairman" : "a resident"} — taking you there.`
+        );
+      }
+      router.replace(actualRole === "admin" ? "/(admin)" : "/(resident)");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Couldn't log in. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-canvas">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="flex-1"
+      <KeyboardAwareScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 24, paddingBottom: 32 }}
+        enableOnAndroid
+        extraScrollHeight={28}
+        enableResetScrollToCoords={false}
+        keyboardShouldPersistTaps="always"
+        keyboardDismissMode="none"
+        showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-          className="px-6"
-        >
-          <View className="w-14 h-14 rounded-2xl bg-navy items-center justify-center mt-8 mb-6">
-            <Ionicons name="shield-checkmark" size={26} color="#F2A93B" />
+          <View className="mt-8 mb-6">
+            <Image
+              source={require("@/assets/Logo.png")}
+              className="w-20 h-20"
+              resizeMode="contain"
+            />
           </View>
 
           <Text className="font-display-bold text-2xl text-navy mb-1">
@@ -59,22 +86,26 @@ export default function Login() {
             Sign in to continue to SafeGuard
           </Text>
 
-          {/* role toggle */}
           <View className="flex-row bg-card border border-hairline rounded-2xl p-1 mb-5">
-            {(["resident", "admin"] as Role[]).map((r) => (
+            {(
+              [
+                { key: "resident" as Role, label: "Resident" },
+                { key: "admin" as Role, label: "Admin" },
+              ]
+            ).map((opt) => (
               <Pressable
-                key={r}
-                onPress={() => setRole(r)}
+                key={opt.key}
+                onPress={() => setPortal(opt.key)}
                 className={`flex-1 py-2.5 rounded-xl items-center ${
-                  role === r ? "bg-navy" : ""
+                  portal === opt.key ? "bg-navy" : ""
                 }`}
               >
                 <Text
-                  className={`font-body-semibold text-[13px] capitalize ${
-                    role === r ? "text-white" : "text-mist"
+                  className={`font-body-semibold text-[13px] ${
+                    portal === opt.key ? "text-white" : "text-mist"
                   }`}
                 >
-                  {r}
+                  {opt.label}
                 </Text>
               </Pressable>
             ))}
@@ -95,23 +126,34 @@ export default function Login() {
           <Text className="font-body-medium text-ink text-[13px] mb-1.5">
             Password
           </Text>
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Enter your password"
-            placeholderTextColor="#9A9CA5"
-            secureTextEntry
-            className="bg-card border border-hairline rounded-xl px-4 py-3.5 mb-4 font-body text-ink"
-          />
-
-          <View className="mb-2">
-            <SelectField
-              label={role === "admin" ? "Coverage area" : "Your area"}
-              value={region}
-              options={REGIONS}
-              onChange={setRegion}
+          <View className="flex-row items-center bg-card border border-hairline rounded-xl px-3 mb-4">
+            <TextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Enter your password"
+              placeholderTextColor="#9A9CA5"
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              className="flex-1 py-3.5 pr-2 font-body text-ink"
             />
+            <Pressable
+              onPress={() => setShowPassword((prev) => !prev)}
+              className="p-2"
+              hitSlop={8}
+            >
+              <Ionicons
+                name={showPassword ? "eye-off-outline" : "eye-outline"}
+                size={18}
+                color="#667085"
+              />
+            </Pressable>
           </View>
+
+          {error && (
+            <View className="bg-coral-light rounded-xl px-4 py-3 mb-4">
+              <Text className="font-body-medium text-coral text-[13px]">{error}</Text>
+            </View>
+          )}
 
           <Pressable
             onPress={enableLocation}
@@ -126,7 +168,7 @@ export default function Login() {
               {locationStatus === "granted"
                 ? "Location enabled"
                 : locationStatus === "denied"
-                ? "Location permission denied — you can still pick your area above"
+                ? "Location permission denied — your account's registered area is still used"
                 : "Enable location to connect with nearby reports"}
             </Text>
           </Pressable>
@@ -139,11 +181,16 @@ export default function Login() {
 
           <Pressable
             onPress={handleLogin}
-            className="bg-navy rounded-2xl py-4 items-center mb-5"
+            disabled={isSubmitting}
+            className={`bg-navy rounded-2xl py-4 items-center mb-5 ${isSubmitting ? "opacity-70" : ""}`}
           >
-            <Text className="font-body-semibold text-white text-[15px]">
-              Log in as {role === "admin" ? "admin" : "resident"}
-            </Text>
+            {isSubmitting ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="font-body-semibold text-white text-[15px]">
+                Log in as {portal === "admin" ? "admin" : "resident"}
+              </Text>
+            )}
           </Pressable>
 
           <View className="flex-row justify-center mb-8">
@@ -156,8 +203,7 @@ export default function Login() {
               </Text>
             </Pressable>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable, ScrollView, Image } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -53,9 +53,11 @@ export default function AdminProfile() {
             Admin profile
           </Text>
           <View className="items-center">
-            <View className="w-24 h-24 rounded-full bg-white/10 border-2 border-amber items-center justify-center mb-3">
-              <Ionicons name="shield-checkmark" size={38} color="#F2A93B" />
-            </View>
+            <Image
+              source={require("@/assets/Logo.png")}
+              className="w-24 h-24 mb-3"
+              resizeMode="contain"
+            />
             <Text className="font-display text-[19px] text-white">
               {userName}
             </Text>

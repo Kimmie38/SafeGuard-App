@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, Image } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -38,9 +38,11 @@ export default function Home() {
       {/* top bar */}
       <View className="flex-row items-center justify-between px-5 py-3">
         <View className="flex-row items-center gap-2">
-          <View className="w-8 h-8 rounded-full bg-navy items-center justify-center">
-            <Ionicons name="shield-checkmark" size={16} color="#F2A93B" />
-          </View>
+          <Image
+            source={require("@/assets/Logo.png")}
+            className="w-8 h-8"
+            resizeMode="contain"
+          />
           <Text className="font-display-bold text-lg text-navy">SafeGuard</Text>
         </View>
         <View className="flex-row items-center gap-4">

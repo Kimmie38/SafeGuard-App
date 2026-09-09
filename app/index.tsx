@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, Pressable, Dimensions } from "react-native";
+import { View, Text, Pressable, Dimensions, Image } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -49,15 +49,11 @@ export default function Onboarding() {
       </View>
 
       <View className="flex-1 items-center justify-center px-8">
-        <View
-          className={`w-24 h-24 rounded-full items-center justify-center mb-8 ${
-            slide.accent === "coral" ? "bg-coral-light" : "bg-amber/20"
-          }`}
-        >
-          <Ionicons
-            name={slide.icon}
-            size={44}
-            color={slide.accent === "coral" ? "#D8492F" : "#8A5C15"}
+        <View className="mb-8">
+          <Image
+            source={require("@/assets/Logo.png")}
+            className="w-28 h-28"
+            resizeMode="contain"
           />
         </View>
         <Text className="font-display-bold text-3xl text-navy text-center mb-3">
