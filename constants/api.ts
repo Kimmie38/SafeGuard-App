@@ -14,7 +14,8 @@ import Constants from "expo-constants";
  *      "localhost" on-device means the device itself, not your computer.
  */
 function resolveApiUrl(): string {
-  const fromEnv = process.env.EXPO_PUBLIC_API_URL;
+  const fromExtra = Constants.expoConfig?.extra?.apiUrl ?? Constants.manifest2?.extra?.apiUrl;
+  const fromEnv = process.env.EXPO_PUBLIC_API_URL ?? fromExtra;
   if (fromEnv) return fromEnv.replace(/\/+$/, "");
 
   if (Platform.OS === "android") {

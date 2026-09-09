@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SafeGuard",
-    "slug": "safeguard",
+    "slug": "safeguard-1smviw-ix2e6aihr-sntp",
     "scheme": "safeguard",
     "version": "1.0.0",
     "icon": "./assets/Logo.png",
@@ -19,7 +19,7 @@
     "android": {
       "package": "com.safeguard.app",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/shield-icon.svg",
+        "foregroundImage": "./assets/Logo.png",
         "backgroundColor": "#14213D"
       },
       "permissions": [
@@ -45,8 +45,9 @@
     ],
     "extra": {
       "router": {},
+      "apiUrl": "https://safeguard-app-backend.onrender.com",
       "eas": {
-        "projectId": "c8bf0d24-d189-4bce-a10a-21ec79a02499"
+        "projectId": "8f14a5b0-1a3f-454a-ae87-14afaa074c40"
       }
     },
     "owner": "safeguard-app"
